@@ -1,0 +1,3 @@
+import SwiftUI
+struct AnalysisView: View { let store: LedgerStore; var body: some View { ScrollView { VStack(alignment: .leading, spacing: 16) { Text("分析").font(.largeTitle.bold()); Card { Text("组合净值走势").font(.headline); RoundedRectangle(cornerRadius: 12).fill(.blue.opacity(0.1)).frame(height: 160).overlay(Image(systemName: "chart.xyaxis.line").font(.system(size: 50)).foregroundStyle(.blue)); Text(store.summary.reason ?? "组合年化 8.62% · 超额收益 +3.42%").font(.caption).foregroundStyle(.secondary) }; HStack { Card { Text("组合年化").font(.caption); Text("8.62%").font(.title2.bold()).foregroundStyle(.green) }; Card { Text("超额收益").font(.caption); Text("+3.42%").font(.title2.bold()).foregroundStyle(.green) } } }.padding() } }
+}

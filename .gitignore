@@ -1,0 +1,10 @@
+.tools/
+.gradle/
+.kotlinc/
+**/build/
+**/.gradle/
+**/.kotlin/
+**/local.properties
+*.apk
+*.aab
+.github-source-package/

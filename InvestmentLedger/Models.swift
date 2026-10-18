@@ -1,0 +1,13 @@
+import Foundation
+import SwiftData
+
+enum AssetType: String, Codable, CaseIterable { case stock = "股票", fund = "基金", bond = "债券", cash = "现金/货币基金" }
+enum TransactionType: String, Codable, CaseIterable { case buy = "买入", sell = "卖出", dividend = "分红", interest = "利息", deposit = "资金转入", withdrawal = "资金转出", fee = "费用" }
+enum ImportState: String, Codable { case pending = "待确认", confirmed = "已确认", rejected = "已忽略" }
+
+@Model final class InvestmentAccount { var name: String; var initialCash: Decimal; var createdAt: Date; init(name: String = "我的账户", initialCash: Decimal = 0) { self.name = name; self.initialCash = initialCash; self.createdAt = .now } }
+@Model final class Asset { var name: String; var code: String; var typeRaw: String; init(name: String, code: String = "", type: AssetType = .stock) { self.name = name; self.code = code; self.typeRaw = type.rawValue } var type: AssetType { get { AssetType(rawValue: typeRaw) ?? .stock } set { typeRaw = newValue.rawValue } } }
+@Model final class Transaction { var date: Date; var typeRaw: String; var assetName: String; var quantity: Decimal; var unitPrice: Decimal; var amount: Decimal; var fee: Decimal; var note: String; var source: String; init(date: Date = .now, type: TransactionType, assetName: String, quantity: Decimal = 0, unitPrice: Decimal = 0, amount: Decimal, fee: Decimal = 0, note: String = "", source: String = "手动录入") { self.date=date; self.typeRaw=type.rawValue; self.assetName=assetName; self.quantity=quantity; self.unitPrice=unitPrice; self.amount=amount; self.fee=fee; self.note=note; self.source=source } var type: TransactionType { TransactionType(rawValue: typeRaw) ?? .buy } }
+@Model final class Benchmark { var name: String; var annualRate: Decimal; var enabled: Bool; init(name: String = "货币基金", annualRate: Decimal = 0.052, enabled: Bool = true) { self.name=name; self.annualRate=annualRate; self.enabled=enabled } }
+@Model final class PortfolioSnapshot { var date: Date; var total: Decimal; var cash: Decimal; init(date: Date = .now, total: Decimal = 0, cash: Decimal = 0) { self.date=date; self.total=total; self.cash=cash } }
+@Model final class PendingImport { var imagePath: String; var assetName: String; var typeRaw: String; var amount: Decimal; var confidence: Double; var stateRaw: String; init(assetName: String, type: TransactionType, amount: Decimal, confidence: Double = 0.96, imagePath: String = "") { self.imagePath=imagePath; self.assetName=assetName; self.typeRaw=type.rawValue; self.amount=amount; self.confidence=confidence; self.stateRaw=ImportState.pending.rawValue } var state: ImportState { get { ImportState(rawValue: stateRaw) ?? .pending } set { stateRaw = newValue.rawValue } } }
